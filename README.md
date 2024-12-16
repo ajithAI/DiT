@@ -16,10 +16,16 @@ python3 convert_checkpoint.py --timm_ckpt /home/user/TRT_LLM_0.16/DiT/Models/DiT
 ### Build TRT Engines : 
 
 ```
- Error Code: 9: Skipping tactic 0x0000000000000000 due to exception [autotuner.cpp:get_best_tactics:2400] Autotuner: no tactics to implement operation:
- 1216: corrltn: DiT/x_embedder/proj/conv2d_L3511/CONVOLUTION_0_output_0'_before_bias.1-(f16[__mye2080_proxy.1,1152,32,32][]so[], mem_prop=0) | DiT/forward_with_cfg_L323/concat_L2514/CONCATENATION_0_output_0'.1-(f16[__mye2080_proxy.1,4,64,64][]so[], mem_prop=0), DiT/x_embedder/proj/conv2d_L3511/CONVOLUTION_0 filterWeightsHalf-{2.58088e-05, 0.0063
-[12/16/2024-05:36:07] [TRT] [E] IBuilder::buildSerializedNetwork: Error Code 10: Internal Error (Could not find any implementation for node {ForeignNode[DiT/forward_with_cfg_L320/slice_L1276/SLICE_0...DiT/blocks/0/attn/dense/multiply_collect_L272/multiply_and_lora_L246/matmul_L1064/cast_L871/CAST_0]}.)
+trtllm-build --checkpoint_dir ./tllm_checkpoint --max_batch_size 8 --remove_input_padding disable  --bert_attention_plugin disable
+python vae_decoder_trt.py --max_batch_size 8
+# Succeeded building vae_decoder/plan/visual_encoder_fp16.plan in 122 s
 ```
 
-![{EA282778-2F89-4E0C-8515-15EA975221BF}](https://github.com/user-attachments/assets/f38a0894-86ac-44b2-bcb2-ce5567314825)
+### Run Inference : 
+```
+mpirun -n 4 --allow-run-as-root python sample.py --batch-size 8
+```
+
+### Result : 
+![{15DC3646-86A2-4E04-9D30-8FCB0D181AC1}](https://github.com/user-attachments/assets/0b7f243a-0cf5-48b9-9ed1-be161b79d379)
 
